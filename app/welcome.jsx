@@ -5,8 +5,10 @@ import { hp, wp } from '../helpers/comman';
 import { theme } from '../constants/theme';
 import Button from '../components/Button';
 import { Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function Welcome() {
+  const router=useRouter();
   return (
     <ScreenWrapper bg='white'>
        <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -27,15 +29,15 @@ export default function Welcome() {
           <Button
           title='Geting Started'
           buttonStyle={{marginHorizontal:wp(3)}}
-          onPress={()=>{}}
+          onPress={()=>router.push('signUp')}
           
           />
           <View style={styles.bottomTextContainer}>
             <Text style={styles.loginText}>
               Already have and Account?
             </Text>
-            <Pressable>
-              <Text style={[styles.loginText]}>
+            <Pressable onPress={()=>router.push('login')}>
+              <Text style={[styles.loginText,{color:theme.colors.primaryDark,fontWeight:theme.fonts.semibold}]}>
                 Login
               </Text>
             </Pressable>
@@ -86,6 +88,13 @@ const styles=StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
     gap:6
+
+
+  },
+  loginText:{
+    textAlign:'center',
+    color:theme.colors.text,
+    fontSize:hp(1.7),
 
 
   }
