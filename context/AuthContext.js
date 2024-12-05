@@ -11,6 +11,7 @@ export const AuthProvider=({children})=>{
 
 
     const setUserData=userData=>{
+        
         setUser({...userData});
     }
 
