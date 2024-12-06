@@ -18,3 +18,20 @@ export const getUserData= async(userId)=>{
         return{succes:false,msg:error.message}
     }
 }
+export const updateUser= async(userId,data)=>{
+    try{
+        const{error}= await supabase
+        .from('users')
+        .update(data)
+        .eq('id',userId);
+        if(error){
+            return{succes:false,msg:error?.message}
+
+        }
+        return{succes:true,data};
+
+    }catch(error){
+        console.log('got error',error);
+        return{succes:false,msg:error.message}
+    }
+}
