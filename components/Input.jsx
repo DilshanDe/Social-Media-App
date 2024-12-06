@@ -6,7 +6,7 @@ import { hp } from '../helpers/comman'
 
 const Input = (props) => {
   return (
-    <View style={[styles.container,props.containerStyles && props.containerStyles]}>
+    <View style={[styles.container,props.containerStyle && props.containerStyle]}>
       {
         props.icon && props.icon
       }
@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
         borderRadius:theme.radius.xxl,
         borderCurve:'continuous',
         paddingHorizontal:18,
-        gap:12
+        gap:12,
     }
 })
