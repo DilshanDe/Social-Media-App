@@ -13,8 +13,10 @@ import { useRouter } from 'expo-router'
 import Avatar from '../../components/Avatar'
 import User from '../../assets/icons/User'
 import { fetchPosts } from '../../Services/postService'
+import { FlatList } from 'react-native'
+import PostCard from '../../components/PostCard'
 
-
+var limit=0;
 const Home = () => {
     const{ user,setAuth}=useAuth();
     const router=useRouter();
@@ -29,8 +31,13 @@ const Home = () => {
 
     const getPosts= async()=>{
       //call api hear
-      let res= await fetchPosts();
-      console.log('got post results:',res);
+      limit=limit+10;
+      console.log('feacthing posts',limit);
+      let res= await fetchPosts(limit);
+      if(res.success){
+        setPosts(res.data);
+      }
+     
 
     }
 
@@ -73,6 +80,20 @@ const Home = () => {
               </Pressable>
             </View>
           </View>
+
+          {/*posts*/}
+          <FlatList
+          data={posts}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listStyle}
+          keyExtractor={item=>item.id.toString()}
+          renderItem={({item})=><PostCard
+              item={item}
+              currentUser={user}
+              router={router}
+              />
+        }
+        />
 
         </View>
      
