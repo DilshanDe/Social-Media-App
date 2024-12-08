@@ -4,6 +4,8 @@ import { hp,wp } from '../helpers/comman'
 import { theme } from '../constants/theme'
 import Avatar from './Avatar'
 import moment from 'moment'
+import { TouchableOpacity } from 'react-native'
+import Icon from '../assets/icons'
 
 const PostCard = ({
     item,
@@ -42,6 +44,9 @@ const PostCard = ({
             </View>
 
         </View>
+        <TouchableOpacity>
+            <Icon name='threeDotsHorizontal' size={hp(3.5)} strokeWidth={3}color={theme.colors.text}/>
+        </TouchableOpacity>
       </View>
     </View>
   )
