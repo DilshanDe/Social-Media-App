@@ -23,6 +23,10 @@ const PostCard = ({
         elevation:1
     }
 
+    const openPostDetails=()=>{
+        
+    }
+
     const createdAt=moment(item?.created_at).format('MMM D');
   return (
     <View style={[styles.container,hasShadow && shadowStyles]}>
@@ -44,9 +48,16 @@ const PostCard = ({
             </View>
 
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={openPostDetails}>
             <Icon name='threeDotsHorizontal' size={hp(3.5)} strokeWidth={3}color={theme.colors.text}/>
         </TouchableOpacity>
+      </View>
+
+      {/*post body and media*/}
+      <View style={styles.content}>
+        <View style={styles.postBody}>
+            <Text>{item?.body}</Text>
+        </View>
       </View>
     </View>
   )
