@@ -95,7 +95,16 @@ const onSubmit= async()=>{
   setLoading(true);
   let res=await createOrUpdatePost(data);
   setLoading(false);
-  console.log('post res:',res);
+  if(res.success){
+    setFile(null);
+    bodyRef.current='';
+    editorRef.current?.setContentHtml('');
+    router.back();
+
+  }else{
+    Alert.alert('Post',res.msg);
+  }
+ 
 
 }
 
