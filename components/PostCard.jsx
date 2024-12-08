@@ -2,6 +2,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { hp,wp } from '../helpers/comman'
 import { theme } from '../constants/theme'
+import Avatar from './Avatar'
+import moment from 'moment'
 
 const PostCard = ({
     item,
@@ -18,9 +20,29 @@ const PostCard = ({
         shadowRadius:6,
         elevation:1
     }
+
+    const createdAt=moment(item?.created_at).format('MMM D');
   return (
     <View style={[styles.container,hasShadow && shadowStyles]}>
-      <Text>PostCard</Text>
+      <View style={styles.header}>
+        {/*user info and post item*/}
+        <View style={styles.userInfo}>
+            <Avatar
+            size={hp(4.5)}
+            uri={item?.user?.image}
+            rounded={theme.radius.md}
+            />
+            <View style={{gap:2}}>
+                <Text style={styles.username}>
+                    {item?.user?.name}
+                </Text>
+                <Text style={styles.postTime}>
+                    {createdAt}
+                </Text>
+            </View>
+
+        </View>
+      </View>
     </View>
   )
 }
