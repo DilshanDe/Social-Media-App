@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { StatusBar } from 'expo-status-bar'
 import Button from '../../components/Button'
@@ -12,11 +12,29 @@ import Icon from '../../assets/icons'
 import { useRouter } from 'expo-router'
 import Avatar from '../../components/Avatar'
 import User from '../../assets/icons/User'
+import { fetchPosts } from '../../Services/postService'
 
 
 const Home = () => {
     const{ user,setAuth}=useAuth();
     const router=useRouter();
+
+
+    const[posts,setPosts]=useState([]);
+
+
+    useEffect(()=>{
+      getPosts();
+    },[])
+
+    const getPosts= async()=>{
+      //call api hear
+      let res= await fetchPosts();
+      console.log('got post results:',res);
+
+    }
+
+   
 
    // console.log('user:',user);
 
