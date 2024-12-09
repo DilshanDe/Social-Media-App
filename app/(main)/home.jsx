@@ -1,7 +1,7 @@
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
-import { StatusBar } from 'expo-status-bar'
+
 import Button from '../../components/Button'
 import { useAuth } from '../../context/AuthContext'
 import { supabase } from '../../lib/supabase'
@@ -15,6 +15,7 @@ import User from '../../assets/icons/User'
 import { fetchPosts } from '../../Services/postService'
 import { FlatList } from 'react-native'
 import PostCard from '../../components/PostCard'
+import Loading from '../../components/Loading'
 
 var limit=0;
 const Home = () => {
@@ -55,6 +56,7 @@ const Home = () => {
     //}
   return (
     <ScreenWrapper bg='white'>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
         <View style={styles.container}>
           {/*header*/}
           <View style={styles.header}>
@@ -93,6 +95,11 @@ const Home = () => {
               router={router}
               />
         }
+        ListFooterComponent={(
+          <View style={{marginVertical:posts.length==0? 200:30}}>
+            <Loading/>
+            </View>
+        )}
         />
 
         </View>
