@@ -38,7 +38,7 @@ export const fetchPosts = async (limit = 10) => {
             .from('posts')
             .select(`
                 *,
-                users(id ,name,image)
+               user: users(id ,name,image)
                 `)
             .order('created_at', { ascending: false }) 
             .limit(limit);
