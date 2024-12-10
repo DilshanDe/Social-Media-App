@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Alert, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
 import { hp,wp } from '../helpers/comman'
 import { theme } from '../constants/theme'
 import Avatar from './Avatar'
@@ -11,6 +11,8 @@ import { color } from '@rneui/themed/dist/config'
 import { Image } from 'expo-image'
 import { getSupabaseFileUrl } from '../Services/imageService'
 import{Video}from'expo-av'
+import { createPostLike, removePostLike } from '../Services/postService'
+import { useEffect } from 'react'
 
 
 const textStyles={
@@ -45,14 +47,52 @@ const PostCard = ({
         shadowRadius:6,
         elevation:1
     }
+    const[likes,setLikes]=useState([]);
+
+    useEffect(()=>{
+      setLikes(item?.postLikes);
+
+    },[])
 
     const openPostDetails=()=>{
         
     }
+    const onLike=async()=>{
+      if(liked){
+        //remove like
+        let updatedLikes=likes.filter(like=>like.userId!=currentUser?.id);
+  
+        setLikes([...updatedLikes])
+  
+  
+        let res= await removePostLike(item?.id,currentUser?.id);
+        console.log('removed like:',res);
+        if(!res.success){
+          Alert.alert("post","somethingwent wrong");
+        }
+      }else{
+        //create a new like
+        let data={
+          userId:currentUser?.id,
+          postId:item?.id
+        }
+  
+        setLikes([...likes,data])
+  
+  
+        let res= await createPostLike(data);
+        console.log('addded like:',res);
+        if(!res.success){
+          Alert.alert("post","somethingwent wrong");
+        }
+      }
+      
+    }
 
     const createdAt=moment(item?.created_at).format('MMM D');
-    const likes=[];
-    const liked=false;
+    
+    const liked=likes.filter(like=>like.userId==currentUser?.id)[0]?true:false;
+   
   return (
     <View style={[styles.container,hasShadow && shadowStyles]}>
       <View style={styles.header}>
@@ -119,7 +159,7 @@ const PostCard = ({
       {/* Like, comment & share */}
             <View style={styles.footer}>
                 <View style={styles.footerButton}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={onLike}>
                     <Icon 
                         name="heart" 
                         size={24} 
