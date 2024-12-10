@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import { hp,wp } from '../helpers/comman'
+import { hp,stripHtmlTags,wp } from '../helpers/comman'
 import { theme } from '../constants/theme'
 import Avatar from './Avatar'
 import moment from 'moment'
@@ -13,6 +13,7 @@ import { getSupabaseFileUrl } from '../Services/imageService'
 import{Video}from'expo-av'
 import { createPostLike, removePostLike } from '../Services/postService'
 import { useEffect } from 'react'
+import { Share } from 'react-native'
 
 
 const textStyles={
@@ -87,6 +88,11 @@ const PostCard = ({
         }
       }
       
+    }
+
+    const onShare=async()=>{
+      let content={message:stripHtmlTags  (item?.body)};
+      Share.share(content);
     }
 
     const createdAt=moment(item?.created_at).format('MMM D');
@@ -188,7 +194,7 @@ const PostCard = ({
                     </Text>
                 </View>
                 <View style={styles.footerButton}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={onShare}>
                     <Icon 
                         name="share" 
                         size={24} 
