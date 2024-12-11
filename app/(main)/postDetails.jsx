@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect } from 'react';
 import { fetchPostsDetails } from '../../Services/postService';
@@ -10,15 +10,25 @@ import PostCard from '../../components/PostCard';
 import User from '../../assets/icons/User';
 import { useAuth } from '../../context/AuthContext';
 import Loading from '../../components/Loading';
+import Input from '../../components/Input';
+import { TouchableOpacity } from 'react-native';
+import Icon from '../../assets/icons';
 
 const PostDetails = () => {
    const{postId}= useLocalSearchParams();
    const{user}= useAuth();
    const router=useRouter();
    const[startLoading,setStartLoading]=useState(true);
-   console.log('got the post id:',postId)
+   const inputRef=useRef(null);
+   const commentRef=useRef('');
 
    const[post,setPost]=useState(null);
+   const[loading,setLoading]=useState(false);
+
+   const onNewComment= async()=>{
+    
+
+   }
 
    useEffect(()=>{
     getPostDetails();
@@ -49,6 +59,33 @@ const PostDetails = () => {
          hasShadow={false}
          showMoreIcon={false}
         />
+
+        {/* add a comment*/}
+        <View style={styles.inputContainer}>
+          <Input
+          inputRef={inputRef}
+          placeholder='Type Comment here...'
+          onChangeText={value=>commentRef.current=value}
+          placeholderTextColor={theme.colors.textLight}
+          containerStyle={{flex:1,height:hp(6.2),borderRadius:theme.radius.xl}}
+          />
+
+          {
+            loading?(
+
+              <View style={styles.loading}>
+                <Loading size='small'/>
+                </View>
+            ):(
+              <TouchableOpacity style={styles.sendIcon} onPress={onNewComment}>
+            <Icon name='send' color={theme.colors.primaryDark}/>
+          </TouchableOpacity>
+
+            )
+          }
+
+          
+        </View>
       </ScrollView>
     </View>
   )
