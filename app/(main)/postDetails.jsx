@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect } from 'react';
+import { fetchPostsDetails } from '../../Services/postService';
 
 const PostDetails = () => {
    const{postId}= useLocalSearchParams();
@@ -16,7 +17,7 @@ const PostDetails = () => {
 
    const getPostDetails=async()=>{
     //fetch post detais
-    
+    let res =await fetchPostsDetails(postId);
    }
   return (
     <View>
