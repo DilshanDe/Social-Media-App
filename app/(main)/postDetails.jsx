@@ -1,13 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect } from 'react';
 import { fetchPostsDetails } from '../../Services/postService';
 import { hp, wp } from '../../helpers/comman';
 import { theme } from '../../constants/theme';
+import { ScrollView } from 'react-native';
+import PostCard from '../../components/PostCard';
+import User from '../../assets/icons/User';
+import { useAuth } from '../../context/AuthContext';
+import Loading from '../../components/Loading';
 
 const PostDetails = () => {
    const{postId}= useLocalSearchParams();
+   const{user}= useAuth();
+   const router=useRouter();
+   const[startLoading,setStartLoading]=useState(true);
    console.log('got the post id:',postId)
 
    const[post,setPost]=useState(null);
@@ -21,10 +29,27 @@ const PostDetails = () => {
     //fetch post detais
     let res =await fetchPostsDetails(postId);
     if(res.success) setPost(res.data);
+    setStartLoading(false);
+   }
+   if(startLoading){
+    return(
+      <View style={styles.center}>
+        <Loading/>
+      </View>
+    )
    }
   return (
-    <View>
-      <Text>PostDetails</Text>
+    <View style={styles.container}>
+
+      <ScrollView showsVerticalScrollIndicator={false}contentContainerStyle={styles.list}>
+        <PostCard
+         item={post}
+         currentUser={user}
+         router={router}
+         hasShadow={false}
+         showMoreIcon={false}
+        />
+      </ScrollView>
     </View>
   )
 }
