@@ -55,6 +55,29 @@ export const fetchPosts = async (limit = 10) => {
         return { success: false, msg: "Could not fetch your posts" };
     }
 };
+export const fetchPostsDetails = async (postId) => {
+    try {
+        const { data, error } = await supabase
+            .from('posts')
+            .select(`
+                *,
+               user: users(id ,name,image),
+               postLikes(*)
+                `)
+            .eq('id',postId)
+            .single();
+
+        if (error) {
+            console.log('fetchPostsDetails error', error);
+            return { success: false, msg: "Could not fetch your post" };
+        }
+
+        return { success: true, data:data};
+    } catch (error) {
+        console.log('fetchPosts error', error);
+        return { success: false, msg: "Could not fetch your posts" };
+    }
+};
 export const createPostLike = async (postLike) => {
     try {
         const{data,error}=await supabase
