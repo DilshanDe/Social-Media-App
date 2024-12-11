@@ -9,11 +9,12 @@ import Icon from '../assets/icons'
 import RenderHtml from 'react-native-render-html';
 import { color } from '@rneui/themed/dist/config'
 import { Image } from 'expo-image'
-import { getSupabaseFileUrl } from '../Services/imageService'
+import { downloadFile, getSupabaseFileUrl } from '../Services/imageService'
 import{Video}from'expo-av'
 import { createPostLike, removePostLike } from '../Services/postService'
 import { useEffect } from 'react'
 import { Share } from 'react-native'
+import Loading from './Loading'
 
 
 const textStyles={
@@ -49,6 +50,7 @@ const PostCard = ({
         elevation:1
     }
     const[likes,setLikes]=useState([]);
+    const[loading,setLoading]=useState(false);
 
     useEffect(()=>{
       setLikes(item?.postLikes);
@@ -56,6 +58,7 @@ const PostCard = ({
     },[])
 
     const openPostDetails=()=>{
+      router.push({pathname:'postDetails',params:{postId:item?.id}})
         
     }
     const onLike=async()=>{
@@ -92,6 +95,13 @@ const PostCard = ({
 
     const onShare=async()=>{
       let content={message:stripHtmlTags  (item?.body)};
+      if(item?.file){
+        //download the file then share the local uri
+        setLoading(true);
+        let url = await downloadFile(getSupabaseFileUrl(item?.file).uri);
+        setLoading(false);
+        content.url=url;
+      }
       Share.share(content);
     }
 
@@ -180,7 +190,7 @@ const PostCard = ({
                     </Text>
                 </View>
                 <View style={styles.footerButton}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={openPostDetails}>
                     <Icon 
                         name="comment" 
                         size={24} 
@@ -194,13 +204,22 @@ const PostCard = ({
                     </Text>
                 </View>
                 <View style={styles.footerButton}>
-                    <TouchableOpacity onPress={onShare}>
-                    <Icon 
-                        name="share" 
-                        size={24} 
-                        color={theme.colors.textLight} 
-                    />
-                    </TouchableOpacity>
+                    
+                      {
+                        loading?(
+                          <Loading size='small'/>
+                        ):(
+                          <TouchableOpacity onPress={onShare}>
+                                  <Icon 
+                              name="share" 
+                              size={24} 
+                              color={theme.colors.textLight} 
+                          />
+                          </TouchableOpacity>
+
+                        )
+                      }
+                    
                     
                 </View>
             </View>
