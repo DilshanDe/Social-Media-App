@@ -39,6 +39,7 @@ const PostCard = ({
     currentUser,
     router,
     hasShadow=true,
+    showMoreIcon=true,
 }) => {
     const shadowStyles={
         shadowOffset:{
@@ -58,6 +59,7 @@ const PostCard = ({
     },[])
 
     const openPostDetails=()=>{
+      if(!showMoreIcon) return null;
       router.push({pathname:'postDetails',params:{postId:item?.id}})
         
     }
@@ -104,6 +106,7 @@ const PostCard = ({
       }
       Share.share(content);
     }
+    
 
     const createdAt=moment(item?.created_at).format('MMM D');
     
@@ -129,9 +132,15 @@ const PostCard = ({
             </View>
 
         </View>
-        <TouchableOpacity onPress={openPostDetails}>
-            <Icon name='threeDotsHorizontal' size={hp(3.5)} strokeWidth={3}color={theme.colors.text}/>
-        </TouchableOpacity>
+        {
+          showMoreIcon &&(
+                <TouchableOpacity onPress={openPostDetails}>
+                <Icon name='threeDotsHorizontal' size={hp(3.5)} strokeWidth={3}color={theme.colors.text}/>
+            </TouchableOpacity>
+
+          )
+        }
+        
       </View>
 
       {/*post body and media*/}
@@ -199,7 +208,7 @@ const PostCard = ({
                     </TouchableOpacity>
                     <Text style={styles.count}>
                         {
-                            0
+                          item?.comments[0].count
                         }
                     </Text>
                 </View>
