@@ -73,7 +73,12 @@ const PostDetails = () => {
         let newComment={...payload.new}
         let res= await getUserData(newComment.userId);
         newComment.user= res.succes?res.data:{};
-        
+        setPost(prevPost=>{
+          return {
+            ...prevPost,
+            comments:[newComment,...prevPost.comments]
+          }
+        })
       }
     }
    useEffect(()=>{
@@ -102,6 +107,16 @@ const PostDetails = () => {
     if(res.success) setPost(res.data);
     setStartLoading(false);
    }
+   const onDeletePost= async(item)=>{
+    console.log('delete post:',item);
+   }
+   const onEditPost= async(item)=>{
+    console.log('edit post:',item);
+   }
+
+
+
+
    if(startLoading){
     return(
       <View style={styles.center}>
@@ -127,6 +142,9 @@ const PostDetails = () => {
          router={router}
          hasShadow={false}
          showMoreIcon={false}
+         showDelete={true}
+         onDelete={onDeletePost}
+         onEdit={onEditPost}
         />
 
         {/* add a comment*/}
