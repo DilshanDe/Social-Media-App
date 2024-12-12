@@ -14,6 +14,8 @@ import Input from '../../components/Input';
 import { TouchableOpacity } from 'react-native';
 import Icon from '../../assets/icons';
 import CommentItem from '../../components/CommentItem';
+import { supabase } from '../../lib/supabase';
+import { getUserData } from '../../Services/userService';
 
 const PostDetails = () => {
    const{postId}= useLocalSearchParams();
@@ -65,10 +67,34 @@ const PostDetails = () => {
     }
    }
 
+    const handleNewComment= async(payload)=>{
+      console.log("got new comment",payload.new)
+      if(payload.new){
+        let newComment={...payload.new}
+        let res= await getUserData(newComment.userId);
+        newComment.user= res.succes?res.data:{};
+        
+      }
+    }
    useEffect(()=>{
+    let commentChannel=supabase
+    .channel('comments')
+    .on('postgres_changes',{
+      event:'INSERT',
+      schema:'public',
+      table:'comments',
+      filter:`postId=eq.${postId}`
+    },handleNewComment)
+    .subscribe();
+
+
+    //getPosts();
     getPostDetails();
 
-   },[]);
+    return()=>{
+      supabase.removeChannel(commentChannel);
+    }
+  },[])
 
    const getPostDetails=async()=>{
     //fetch post detais
