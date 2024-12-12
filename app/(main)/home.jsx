@@ -31,11 +31,17 @@ const Home = () => {
 
 
     const handlePostEvent=async(payload)=>{
+      console.log('payload:',payload);
       if(payload.eventType=='INSERT' && payload?.new?.id){
         let newPost={...payload.new};
         let res =await getUserData(newPost.userId);
+        newPost.postLikes=[];
+        newPost.comments=[{count:0}]
         newPost.user= res.succes? res.data:{};
         setPosts(prevPosts=>[newPost,...prevPosts])
+      }
+      if(payload.eventType=="DELETE"){
+
       }
     }
 
