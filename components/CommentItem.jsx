@@ -1,12 +1,38 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { theme } from '../constants/theme'
 import { hp,wp } from '../helpers/comman'
 import Avatar from './Avatar'
+import { color } from '@rneui/themed/dist/config'
+import moment from 'moment'
+import { TouchableOpacity } from 'react-native'
+import Icon from '../assets/icons'
 
 const CommentItem = ({
-    item
+    item,
+    canDelete=false,
+    onDelete=()=>{}
 }) => {
+
+    const createdAt=moment(item?.created_at).format('MMM D');
+
+    const handleDelete=()=>{
+        Alert.alert('confirm','Are you sure you want to do this',[
+            {
+              text:"Cancel",
+              onPress:()=>console.log('model cancelld'),
+              style:'cancel'
+            },
+            {
+              text:'Delete',
+              onPress:()=> onDelete(item),
+              style:'destructive'
+            }
+          ])
+
+    }
+
+
   return (
     <View style={styles.container}>
       <Avatar
@@ -14,8 +40,32 @@ const CommentItem = ({
       />
       <View style={styles.content}>
         <View style={{flexDirection:'row', justifyContent:"space-between",alignItems:'center'}}>
+            <View style={styles.nameContainer}>
+                <Text style={styles.text}>
+                    {
+                        item?.user?.name
+                    }
+                </Text>
+                <Text>.</Text>
+                <Text style={[styles.text,{color:theme.colors.textLight}]}>
+                    {
+                       createdAt
+                    }
+                </Text>
+            </View>
+            {
+                canDelete && (
+                    <TouchableOpacity onPress={handleDelete}>
+                        <Icon name='delete' size={20} color={theme.colors.rose}/>
+                    </TouchableOpacity>
+
+                )
+            }
             
         </View>
+        <Text style={[styles.text,{fontWeight:'normal'}]}>
+            {item?.text}
+        </Text>
       </View>
     </View>
   )
