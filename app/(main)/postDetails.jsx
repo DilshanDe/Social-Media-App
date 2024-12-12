@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect } from 'react';
-import { fetchPostsDetails } from '../../Services/postService';
+import { createComment, fetchPostsDetails, removeComment } from '../../Services/postService';
 import { hp, wp } from '../../helpers/comman';
 import { theme } from '../../constants/theme';
 import { ScrollView } from 'react-native';
@@ -13,6 +13,7 @@ import Loading from '../../components/Loading';
 import Input from '../../components/Input';
 import { TouchableOpacity } from 'react-native';
 import Icon from '../../assets/icons';
+import CommentItem from '../../components/CommentItem';
 
 const PostDetails = () => {
    const{postId}= useLocalSearchParams();
@@ -25,9 +26,43 @@ const PostDetails = () => {
    const[post,setPost]=useState(null);
    const[loading,setLoading]=useState(false);
 
-   const onNewComment= async()=>{
-    
+   
 
+   const onNewComment= async()=>{
+    if(!commentRef.current) return null;
+    let data={
+      userId:user?.id,
+      postId:post?.id,
+      text: commentRef.current
+,
+    }
+    // create comment
+    setLoading(true);
+    let res= await createComment(data);
+    setLoading(false);
+    if(res.success){
+      //send notificatin later
+      inputRef?.current?.clear();
+      commentRef.current="";
+
+    }else{
+      Alert.alert("comment",res.msg);
+    }
+
+   }
+   const onDeleteComment= async(comment)=>{
+    console.log('deleting comment',comment);
+    let res= await removeComment(comment?.id);
+    if(res.success){
+      setPost(prevPost=>{
+        let updatedPost={...prevPost};
+        updatedPost.comments = updatedPost.comments.filter(c=>c.id !=comment.id);
+        return updatedPost;
+      })
+
+    }else{
+      Alert.alert('comment',res.msg);
+    }
    }
 
    useEffect(()=>{
@@ -48,12 +83,20 @@ const PostDetails = () => {
       </View>
     )
    }
+   if(!post){
+    return(
+      <View style={[styles.center,{justifyContent:'flex-start',marginTop:100}]}>
+        <Text style={styles.notFound}>Post not Found!</Text>
+
+      </View>
+    )
+   }
   return (
     <View style={styles.container}>
 
       <ScrollView showsVerticalScrollIndicator={false}contentContainerStyle={styles.list}>
         <PostCard
-         item={post}
+         item={{...post,comments:[{count:post?.comments?.length}]}}
          currentUser={user}
          router={router}
          hasShadow={false}
@@ -85,6 +128,27 @@ const PostDetails = () => {
           }
 
           
+        </View>
+
+        {/*comment list*/}
+        <View style={{marginVertical:15,gap:17}}>
+          {
+            post?.comments?.map(comment=>
+              <CommentItem
+              key={comment?.id?.toString()}
+              item={comment}
+              canDelete={user.id == comment.userId || user.id==post.userId}
+              onDelete={onDeleteComment}
+              />
+            )
+          }
+          {
+            post?.comments?.length==0 && (
+              <Text style={{color:theme.colors.text,marginLeft:5}}>
+                Be frist to comment
+              </Text>
+            )
+          }
         </View>
       </ScrollView>
     </View>
