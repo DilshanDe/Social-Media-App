@@ -31,7 +31,7 @@ const Home = () => {
 
 
     const handlePostEvent=async(payload)=>{
-      console.log('payload:',payload);
+      //console.log('payload:',payload);
       if(payload.eventType=='INSERT' && payload?.new?.id){
         let newPost={...payload.new};
         let res =await getUserData(newPost.userId);
@@ -40,10 +40,26 @@ const Home = () => {
         newPost.user= res.succes? res.data:{};
         setPosts(prevPosts=>[newPost,...prevPosts])
       }
-      if(payload.eventType=="DELETE"){
+      if(payload.eventType=="DELETE" && payload.old.id){
+        setPosts(prevPosts=>{
+          let updatedPosts= prevPosts.filter(post=>post.id!=payload.old.id);
+          return updatedPosts;
+        })
 
       }
+      if(payload.eventType=='UPDATE' && payload?.new?.id){
+        setPosts(prevPosts => {
+          let updatedPosts = prevPosts.map(post => {
+            if (post.id === payload.new.id) {
+              post.body = payload.new.body;
+              post.file = payload.new.file;
+            }
+            return post;
+          });
+          return updatedPosts;
+        })
     }
+  }
 
 
     useEffect(()=>{
