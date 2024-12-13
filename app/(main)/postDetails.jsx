@@ -2,7 +2,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect } from 'react';
-import { createComment, fetchPostsDetails, removeComment } from '../../Services/postService';
+import { createComment, fetchPostsDetails, removeComment, removePost } from '../../Services/postService';
 import { hp, wp } from '../../helpers/comman';
 import { theme } from '../../constants/theme';
 import { ScrollView } from 'react-native';
@@ -108,10 +108,17 @@ const PostDetails = () => {
     setStartLoading(false);
    }
    const onDeletePost= async(item)=>{
-    console.log('delete post:',item);
+    // delete post here 
+    let res = await removePost(post.id);
+    if(res.success){
+      router.back();
+    }else{
+      Alert.alert('Post',res.msg);
+    }
    }
    const onEditPost= async(item)=>{
-    console.log('edit post:',item);
+    router.back();
+    router.push({pathname:'newPost',params:{...item}})
    }
 
 
