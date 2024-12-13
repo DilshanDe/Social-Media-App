@@ -1,5 +1,5 @@
 import { Alert, Image, Pressable, StyleSheet, Text, View ,ActivityIndicator } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import Header from '../../components/Header'
 import { hp, wp } from '../../helpers/comman'
@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native'
 import Avatar from '../../components/Avatar'
 import { useAuth } from '../../context/AuthContext'
 import RichTextEditor from '../../components/RichTextEditor'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import Icon from '../../assets/icons'
@@ -20,12 +20,30 @@ import { createOrUpdatePost } from '../../Services/postService'
 
 
 const NewPost = () => {
+
+  const post =useLocalSearchParams();
+  console.log('Post',post);
   const{user}= useAuth();
   const bodyRef=useRef("");
   const editorRef=useRef(null);
   const router=useRouter();
   const[loading,setLoading]=useState(false);
   const [file, setFile] = useState(file);
+
+useEffect(() => {
+  if(post && post.id){
+    bodyRef.current=post.body;
+    setFile(post.file || null);
+    setTimeout(() => {
+      editorRef.current?.setContentHTML(post.body);
+    }, 300);
+    
+
+  }
+
+  
+}, []);
+  
 
 
 const onPick=async(isImage)=>{
@@ -62,8 +80,8 @@ const getFileType=file=>{
   if(isLocalFile(file)){
     return file.type;
   }
-  // check remote or video add remote file
-  if(file.include('postImages')){
+  // check remote or video add remote file          inclued eke s ek aniwaryayai ek nathuwa dawask hewwwa
+  if(file.includes('postImages')){
     return 'image';
   }
   return 'video';
@@ -91,6 +109,9 @@ const onSubmit= async()=>{
     userId:user?.id,
 
   }
+  if(post && post.id) data.id=post.id;
+
+
   //create post
   setLoading(true);
   let res=await createOrUpdatePost(data);
@@ -187,7 +208,7 @@ const onSubmit= async()=>{
 
           <Button
             buttonStyle={{height:hp(6.2)}}
-            title="Post"
+            title={post && post.id?"Update":"Post"}
             hasShadow={false}
             onPress={onSubmit}
 
