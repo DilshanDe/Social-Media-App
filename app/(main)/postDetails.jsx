@@ -43,7 +43,11 @@ const PostDetails = () => {
     let res= await createComment(data);
     setLoading(false);
     if(res.success){
-      //send notificatin later
+      //send notificatin 
+      if(user.id!=post.userId){
+        //send notification
+        
+      }
       inputRef?.current?.clear();
       commentRef.current="";
 
