@@ -35,7 +35,7 @@ const Profile = () => {
  const getPosts= async()=>{
       //call api hear
       if(!hasMore) return null;
-      limit=limit+4;
+      limit=limit+10;
       console.log('feacthing posts',limit);
       let res= await fetchPosts(limit,user.id);
       if(res.success){
