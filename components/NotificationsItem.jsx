@@ -12,10 +12,22 @@ const NotificationsItem = ({
   const handleClick=()=>{
     // open post details
   }
-  console.log('item',item);
+ //console.log('item',item);
   return (
     <TouchableOpacity style={styles.container} onPress={handleClick}>
-      {/*<Avatar/>*/}
+          <Avatar
+            uri={item?.sender?.image}
+            size={hp(5)}
+            
+          
+          />
+          <View style={styles.nameTitle}>
+            <Text style={styles.text}>
+              {
+                item?.sender?.name
+              }
+            </Text>
+          </View>
     </TouchableOpacity>
   )
 }
