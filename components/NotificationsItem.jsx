@@ -4,6 +4,7 @@ import { theme } from '../constants/theme'
 import { hp } from '../helpers/comman'
 import { TouchableOpacity } from 'react-native'
 import Avatar from './Avatar'
+import moment from 'moment'
 
 const NotificationsItem = ({
   item,
@@ -13,6 +14,8 @@ const NotificationsItem = ({
     // open post details
   }
  //console.log('item',item);
+
+  const createdAt=moment(item?.created_at).format('MMM D');
   return (
     <TouchableOpacity style={styles.container} onPress={handleClick}>
           <Avatar
@@ -27,7 +30,17 @@ const NotificationsItem = ({
                 item?.sender?.name
               }
             </Text>
+            <Text style={[styles.text,{color:theme.colors.textDark}]}>
+              {
+                item?.title
+              }
+            </Text>
           </View>
+          <Text  style={[styles.text,{color:theme.colors.textLight}]}>
+            {
+              createdAt
+            }
+          </Text>
     </TouchableOpacity>
   )
 }
