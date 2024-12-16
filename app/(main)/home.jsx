@@ -126,8 +126,17 @@ const Home = () => {
           <View style={styles.header}>
             <Text style={styles.title}>PickUp</Text>
             <View style={styles.icons}>
-              <Pressable onPress={()=>router.push('notification')}>
+              <Pressable onPress={()=>{
+              setNotificationCount(0)
+                router.push('notification')}}>
                <Icon  name='heart'size={hp(3.2)} strokeWidth={2} color={theme.colors.text}/>
+               {
+                notificatinCount>0 && (
+                  <View style={styles.pill}>
+                    <Text style={styles.pilltext}>{notificatinCount}</Text>
+                  </View>
+                )
+               }
                 
               </Pressable >
               <Pressable onPress={()=>router.push('newPost')}>
@@ -223,5 +232,22 @@ const styles = StyleSheet.create({
     fontSize: hp(2),
     textAlign: 'center',
     color: theme.colors.text,
+  },
+  pill: {
+    position: 'absolute',
+    right: -10,
+    top: -4,
+    height: hp(2.2),
+    width: hp(2.2),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: theme.colors.roseLight,
+  },
+  
+  pillText: {
+    color: 'white',
+    fontSize: hp(1.2),
+    fontWeight: theme.fonts.bold,
   },
 })
