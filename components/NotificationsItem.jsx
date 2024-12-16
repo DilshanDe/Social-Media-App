@@ -12,6 +12,8 @@ const NotificationsItem = ({
 }) => {
   const handleClick=()=>{
     // open post details
+    let{postId,commentId}=JSON.parse(item?.data);
+    router.push({pathname:'postDetails',params:{postId,commentId}})
   }
  //console.log('item',item);
 
