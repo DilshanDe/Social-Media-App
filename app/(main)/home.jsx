@@ -27,6 +27,7 @@ const Home = () => {
     const[posts,setPosts]=useState([]);
 
     const[hasMore,setHasMore]=useState(true);
+    const [notificatinCount,setNotificationCount]=useState(0);
 
 
 
@@ -60,6 +61,12 @@ const Home = () => {
         })
     }
   }
+  const  handleNewNotification= async(payload)=>{
+    console.log('got new notification: ',payload);
+    if(payload.eventType="INSERT" && payload.new.id){
+      setNotificationCount(prev=>prev+1);
+    }
+  }
 
 
     useEffect(()=>{
@@ -71,8 +78,17 @@ const Home = () => {
 
       //getPosts();
 
+
+      let notificationChannel=supabase
+      .channel('notification')
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'notification',filter:`reciverId=eq.${user.id}`},handleNewNotification)
+      .subscribe();
+
+
+
       return()=>{
         supabase.removeChannel(postChannel);
+        supabase.removeChannel(notificationChannel);
       }
     },[])
 
